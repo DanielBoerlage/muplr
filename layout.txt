@@ -1,0 +1,32 @@
+C:\Users\Daniel\Music> audioPlayer --repeat Joco/*
+****************************************************************************
+audioPlayer 0.0.1                                   Daniel Boerlage 2014
+—————————————————————————————————|Joco|—————————————————————————————————
+ Playing track: song_b3  (paused)
+ 1:50 [#########################################·················] 2:34
+ Volume: 20    Repeat: playlist
+————————————————————————————————————————————————————————————————————————
+Joco
+  abulm_a
+    song_a1
+    song_a2
+    song_a3
+    song_a4
+    song_a5
+    song_a6
+    song_a7
+    song_a8
+    song_a9
+    song_a10
+    song_a11
+    song_a12
+  abulm_b
+    song_b1
+    song_b2
+>   song_b3
+    song_b4
+    song_b5
+    song_b6
+    song_b7
+    song_b8
+  song_single
