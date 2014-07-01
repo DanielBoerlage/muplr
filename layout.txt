@@ -1,6 +1,6 @@
-C:\Users\Daniel\Music> muplr --repeat JoCo/*
+C:\Users\Daniel\Music> muplr --repeat --volume 20 JoCo/*
 ****************************************************************************
-muplr                                              Daniel Boerlage 2014
+muplr                                               Daniel Boerlage 2014
 —————————————————————————————————|JoCo|—————————————————————————————————
  Playing track: song_b3  (paused)
  1:50 [#########################################·················] 2:34
@@ -30,3 +30,5 @@ JoCo
     song_b7
     song_b8
   song_single
+
+:
