@@ -1,12 +1,12 @@
-C:\Users\Daniel\Music> audioPlayer --repeat Joco/*
+C:\Users\Daniel\Music> muplr --repeat playlist JoCo/*
 ****************************************************************************
-audioPlayer 0.0.1                                   Daniel Boerlage 2014
-—————————————————————————————————|Joco|—————————————————————————————————
+muplr                                              Daniel Boerlage 2014
+—————————————————————————————————|JoCo|—————————————————————————————————
  Playing track: song_b3  (paused)
  1:50 [#########################################·················] 2:34
  Volume: 20    Repeat: playlist
 ————————————————————————————————————————————————————————————————————————
-Joco
+JoCo
   abulm_a
     song_a1
     song_a2
