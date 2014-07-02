@@ -7,7 +7,7 @@ muplr                                               Daniel Boerlage 2014
  Volume: 20    Repeat: on
 ————————————————————————————————————————————————————————————————————————
 JoCo
-  abulm_a
+  album_a
     song_a1
     song_a2
     song_a3
@@ -20,7 +20,7 @@ JoCo
     song_a10
     song_a11
     song_a12
-  abulm_b
+  album_b
     song_b1
     song_b2
 >   song_b3
