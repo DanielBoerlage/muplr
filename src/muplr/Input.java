@@ -33,8 +33,13 @@ public class Input {
 				Main.exit(-1, "Unrecognized option: " + args[i]);
 			i++;
 		}
+
+
+
+
+
 		System.out.println(properties.getProperty("repeat","false"));
 		System.out.println(properties.getProperty("volume","100"));
-		System.out.println(System.getProperty("user.dir"));
+		System.out.println(Main.workingDirectory);
 	}
 }
