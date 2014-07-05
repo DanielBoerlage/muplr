@@ -4,10 +4,16 @@ import java.util.Properties;
 import java.lang.IllegalArgumentException;
 import java.lang.NumberFormatException;
 import java.nio.file.Paths;
+import java.nio.file.Path;
+import java.nio.file.Files;
+import java.nio.file.DirectoryStream;
+import java.nio.file.DirectoryIteratorException;
+import java.io.IOException;
+import java.nio.file.InvalidPathException;
 
 public class Input {
 
-	private final static String usage = "Usage: muplr [-r] [-v volume] File(Pattern) [File(Pattern)..]";
+	private final static String usage = "Usage: muplr [-r] [-v volume] File [File..]";
 
 	public static void parseArgs(String[] args) {
 		if(args.length < 1)
@@ -17,8 +23,10 @@ public class Input {
 		Properties properties = new Properties();
 		int i = 0;
 		while(args[i].startsWith("-")) {
+
 			if(args[i].equals("-r") || args[i].equals("--repeat"))
 				properties.setProperty("repeat", "true");
+
 			else if(args[i].equals("-v") || args[i].equals("--volume")) {
 				i++;
 				try {
@@ -30,17 +38,67 @@ public class Input {
 					Main.exit(-1, "The volume option must be followed by a valid integer");
 				}
 			}
+
 			else
 				Main.exit(-1, "Unrecognized option: " + args[i]);
+			
 			i++;
+			if(i == args.length) // no file specified
+				Main.exit(-1, usage);
 		}
-		String[] filePatterns = new String[args.length - i];
-		System.arraycopy(args, i, filePatterns, 0, filePatterns.length);
-		Playlist loadedPlaylist = Globber.loadPlaylist(filePatterns);
-		System.out.println(loadedPlaylist);
-		//System.out.println(Main.workingDirectory.relativize(Paths.get("C:\\Users\\Daniel\\Desktop\\github\\muplr\\example_artist\\single.mp3")));
 
-		//System.out.println(properties.getProperty("repeat","false"));
-		//System.out.println(properties.getProperty("volume","100"));
+		Playlist loadedPlaylist = new Playlist();
+		/*while(i < args.length) {
+			System.out.println("arg [" + i + "]: " + args[i]);
+			try(DirectoryStream<Path> stream = Files.newDirectoryStream(Main.workingDirectory, args[i])) {
+				for(Path path : stream) {
+					loadedPlaylist.add(path.toFile());
+				}
+			} catch (IOException e) {
+				Main.exit(-1, e.getMessage());  // cause is of type IOException
+			}
+			i++;
+		}*/
+
+		/*for(; i < args.length; i++) {
+			try {
+				Path path = Paths.get(args[i]).toAbsolutePath().normalize();
+				System.out.println(path);
+			} catch(InvalidPathException e) {
+				e.printStackTrace();
+			}
+		}*/
+		
+		/*Path path = Paths.get("dir/subdir/file.txt");
+		System.out.println(path);
+		System.out.println(path.getRoot());
+		System.out.println(path.toAbsolutePath().getRoot());
+		System.out.println(path.getParent());
+		System.out.println(path.getName(0));
+		System.out.println(path.getName(0).relativize(path));
+
+		System.out.println();
+
+		for(String str : path.toString().split("[/\\\\]"))
+			System.out.println(str);*/
+
+		for(; i < args.length; i++) {
+			System.out.println("arg [" + i + "]: " + args[i]);
+			Path argPath = Paths.get(".");
+			try {
+				argPath = Paths.get(args[i]);
+			} catch(InvalidPathException e) {
+
+			}
+			if(argPath.isAbsolute())
+				loadedPlaylist.add(Globber.loadPlaylist(argPath.getRoot(), args[i].split("[/\\\\]"), 1));
+			else
+				loadedPlaylist.add(Globber.loadPlaylist(Main.workingDirectory, args[i].split("[/\\\\]"), 0));
+		}
+
+
+		System.out.println(loadedPlaylist);
+
+
 	}
 }

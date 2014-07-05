@@ -20,4 +20,9 @@ public class Main {
 		}
 		System.exit(code);
 	}
+
+	public static void exit(Exception e) {
+		Output.printErr(e.getMessage());
+		System.exit(-1);
+	}
 }
