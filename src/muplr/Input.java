@@ -84,18 +84,11 @@ public class Input {
 
 		for(; i < args.length; i++) {
 			System.out.println("arg [" + i + "]: " + args[i]);
-			Path argPath = Paths.get(".");
-			try {
-				argPath = Paths.get(args[i]);
-			} catch(InvalidPathException e) {
-
-			}
-			if(argPath.isAbsolute())
-				loadedPlaylist.add(Globber.loadPlaylist(argPath.getRoot(), args[i].split("[/\\\\]"), 1));
+			if(Utils.isAbsolute(args[i]))
+				loadedPlaylist.add(Globber.loadPlaylist(Paths.get("/"), args[i].split("[/\\\\]"), 1));
 			else
 				loadedPlaylist.add(Globber.loadPlaylist(Main.workingDirectory, args[i].split("[/\\\\]"), 0));
 		}
-
 
 		System.out.println(loadedPlaylist);
 

@@ -7,6 +7,6 @@ public class Output {
 	}
 
 	public static void printErr(String str) {
-		System.out.println(str);
+		System.out.println("!error: " + str);
 	}
 }

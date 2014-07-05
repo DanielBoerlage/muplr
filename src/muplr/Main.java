@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 public class Main {
 
 	public final static Path workingDirectory = Paths.get(System.getProperty("user.dir"));
+	public final static String os = System.getProperty("os.name");
 
 	public static void main(String[] args) {
 		Input.parseArgs(args);

@@ -11,7 +11,6 @@ import java.nio.file.InvalidPathException;
 public class Globber {
 
 	public static Playlist loadPlaylist(Path path, String[] argPath, int n) throws InvalidPathException {
-		System.out.println("path: " + path);
 		if(n == argPath.length)
 			return new Playlist();
 		switch(argPath[n]) {
@@ -25,10 +24,11 @@ public class Globber {
 					return loadPlaylist(parent, argPath, n + 1);
 			case "**":
 
+				//Files.walk
+
 
 			default:
 				if(argPath[n].matches("[^\\*\\?\\[\\]\\!]*")) {  // if there is no globbish syntax in the path, no need to sweep the path
-					System.out.println("argP: " + argPath[n]);
 					File newPath = path.resolve(argPath[n]).toFile();
 					if(newPath.exists()) {
 						if(newPath.isDirectory())
@@ -47,7 +47,7 @@ public class Globber {
 					}
 					return playlist;
 				} catch (IOException e) {
-					Main.exit(e);
+					Output.printErr(e.getMessage());
 				}
 		}
 		return new Playlist();
