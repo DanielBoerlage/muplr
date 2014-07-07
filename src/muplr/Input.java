@@ -82,10 +82,8 @@ public class Input {
 		for(String str : path.toString().split("[/\\\\]"))
 			System.out.println(str);*/
 
-		for(; i < args.length; i++) {
-			System.out.println("arg [" + i + "]: " + args[i]);
+		for(; i < args.length; i++)
 			loadedPlaylist.add(Globber.glob(args[i]));
-		}
 
 		System.out.println(loadedPlaylist);
 

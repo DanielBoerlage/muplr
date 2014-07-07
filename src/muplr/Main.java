@@ -2,6 +2,7 @@ package muplr;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.fusesource.jansi.AnsiConsole;
 
 public class Main {
 
@@ -20,10 +21,6 @@ public class Main {
 				Output.printErr(message);
 		}
 		System.exit(code);
-	}
-
-	public static void error(Exception e) {
-		Output.printErr(e.getMessage());
 	}
 
 	public static void error(String errMsg) {

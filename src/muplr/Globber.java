@@ -15,9 +15,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 public class Globber {
 
+	private static String completePath;
 	private static String[] argPath;
 
 	public static Playlist glob(String arg) {
+		completePath = arg;
 		argPath = arg.split("[/\\\\]");
 		if(Utils.isAbsolute(arg))
 			return loadPlaylist(Paths.get("/"), 1);
@@ -34,7 +36,7 @@ public class Globber {
 			case "..":
 				Path parent = path.getParent();
 				if(parent == null)
-					throw new InvalidPathException(Utils.joinPath(argPath), "Error when parsing file path - Root directory doesn't have a parent directory");
+					Main.error("Error when reading file: " + completePath);
 				else
 					return loadPlaylist(parent, n + 1);
 
@@ -75,7 +77,10 @@ public class Globber {
 						else if(n == argPath.length - 1)
 							return new Playlist(newPath);
 					} else {
-						Main.error("file does not exist");
+						if(n == argPath.length - 1)
+							Main.error("File does not exist: " + argPath[n]);
+						else
+							Main.error("Directory does not exist: " + argPath[n]);
 						return new Playlist();
 					}
 				}
@@ -89,7 +94,7 @@ public class Globber {
 					}
 					return playlist;
 				} catch (IOException e) {
-					Main.error(e);
+					Main.error("Error when accessing file: " + completePath);
 				}
 		}
 		return new Playlist();
