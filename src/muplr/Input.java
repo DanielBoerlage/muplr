@@ -84,10 +84,7 @@ public class Input {
 
 		for(; i < args.length; i++) {
 			System.out.println("arg [" + i + "]: " + args[i]);
-			if(Utils.isAbsolute(args[i]))
-				loadedPlaylist.add(Globber.loadPlaylist(Paths.get("/"), args[i].split("[/\\\\]"), 1));
-			else
-				loadedPlaylist.add(Globber.loadPlaylist(Main.workingDirectory, args[i].split("[/\\\\]"), 0));
+			loadedPlaylist.add(Globber.glob(args[i]));
 		}
 
 		System.out.println(loadedPlaylist);

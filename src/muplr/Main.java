@@ -22,8 +22,11 @@ public class Main {
 		System.exit(code);
 	}
 
-	public static void exit(Exception e) {
+	public static void error(Exception e) {
 		Output.printErr(e.getMessage());
-		System.exit(-1);
+	}
+
+	public static void error(String errMsg) {
+		Output.printErr(errMsg);
 	}
 }
