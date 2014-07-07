@@ -17,18 +17,19 @@ public class Globber {
 
 	private static String completePath;
 	private static String[] fragmentedPath;
+	private static Playlist EMPTY_PLAYLIST = new Playlist();
 
 	public static Playlist glob(String arg) {
 		completePath = arg;
 		fragmentedPath = arg.split("[/\\\\]");
 		if(Utils.isAbsolutePath(arg))
 			return loadPlaylist(Paths.get("/"), 1);
-		return loadPlaylist(Main.workingDirectory, 0);
+		return loadPlaylist(Main.WORKING_DIRECTORY, 0);
 	}
 
 	public static Playlist loadPlaylist(Path workingPath, int n) {
-		if(n == fragmentedPath.length)
-			return new Playlist();
+		if(n >= fragmentedPath.length)
+			return EMPTY_PLAYLIST;
 		switch(fragmentedPath[n]) {
 			case ".":
 				return loadPlaylist(workingPath, n+1);
@@ -38,7 +39,7 @@ public class Globber {
 				if(parent == null)
 					Main.error("Invalid path: " + completePath);
 				else
-					return loadPlaylist(parent, n + 1);
+					return loadPlaylist(parent, n+1);
 
 			/*case "**":
 				PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + Utils.joinTrailingPath(fragmentedPath, n++));
@@ -69,26 +70,26 @@ public class Globber {
 				return playlist;*/
 
 			default:
-				if(fragmentedPath[n].matches("[^\\*\\?\\[\\]\\{\\}\\!]*")) {  // if there is no globbish syntax in the path, no need to sweep the path
+				if(fragmentedPath[n].matches("[^\\*\\?\\[\\]\\{\\}]*")) {  // if there is no globbish syntax in the path, no need to sweep the path
 					File newPath = workingPath.resolve(fragmentedPath[n]).toFile();
 					if(newPath.exists()) {
 						if(newPath.isDirectory())
-							return loadPlaylist(newPath.toPath(), n + 1);
+							return loadPlaylist(newPath.toPath(), n+1);
 						else if(n == fragmentedPath.length - 1)
 							return new Playlist(newPath);
 					} else {
 						if(n == fragmentedPath.length - 1)
-							Main.error("File does not exist: " + fragmentedPath[n]);
+							Main.error("File does not exist: " + Utils.joinPathHead(fragmentedPath, fragmentedPath.length));
 						else
-							Main.error("Directory does not exist: " + fragmentedPath[n]);
-						return new Playlist();
+							Main.error("Directory does not exist: " + Utils.joinPathHead(fragmentedPath, n + 1) + "/");
+						return EMPTY_PLAYLIST;
 					}
 				}
 				try(DirectoryStream<Path> stream = Files.newDirectoryStream(workingPath, fragmentedPath[n])) {
 					Playlist playlist = new Playlist();
 					for(Path entry : stream) {
 						if(entry.toFile().isDirectory())
-							playlist.add(loadPlaylist(entry, n + 1));
+							playlist.add(loadPlaylist(entry, n+1));
 						else if(n == fragmentedPath.length - 1)
 							playlist.add(entry.toFile());
 					}
@@ -97,6 +98,6 @@ public class Globber {
 					Main.error("Error when accessing file: " + completePath);
 				}
 		}
-		return new Playlist();
+		return EMPTY_PLAYLIST;
 	}
 }

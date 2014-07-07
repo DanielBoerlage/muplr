@@ -9,7 +9,12 @@ public class Utils {
 		return joinTrailingPath(strs, 0);
 	}*/
 
-	//public static String 
+	public static String joinPathHead(String[] strs, int index) {
+		String out = "";
+		for(int i = 0; i < index; i++)
+			out += strs[i] + "/";
+		return out.substring(0, out.length()-1);
+	}
 
 	/*public static String joinTrailingPath(String[] strs, int index) {
 		if(index == strs.length)
@@ -25,7 +30,7 @@ public class Utils {
 	}*/
 
 	public static boolean isAbsolutePath(String path) {
-		if(Main.os.startsWith("Windows"))
+		if(Main.OS.startsWith("Windows"))
 			return path.substring(0, 1).matches("[/\\\\]") 
 					|| path.length() > 2 && path.substring(0, 3).matches(".:[/\\\\]");
 		return path.startsWith("/");

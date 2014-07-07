@@ -24,7 +24,7 @@ public class _Globber extends SimpleFileVisitor<Path> {
         playlist = new Playlist();
         _Globber globber = new _Globber(patterns);
         try {
-            Files.walkFileTree(Main.workingDirectory, globber);
+            Files.walkFileTree(Main.WORKING_DIRECTORY, globber);
         } catch (IOException e) {
             Output.printErr("Exception in Input.Globber");
         }

@@ -18,7 +18,7 @@ public class Input {
 	public static void parseArgs(String[] args) {
 		Properties properties = new Properties();
 		int i = 0;
-		for(; args[i].startsWith("-"); i++) {
+		for(; i < args.length && args[i].startsWith("-"); i++) {
 			switch(args[i]) {
 				case "-h": case "--help":
 					Output.puts(USAGE);
@@ -45,7 +45,7 @@ public class Input {
 		}
 		if(i == args.length)
 			Main.fatalError(USAGE);
-		
+
 		Playlist playlistBuffer = new Playlist();
 		for(; i < args.length; i++)
 			playlistBuffer.add(Globber.glob(args[i]));

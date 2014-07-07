@@ -17,7 +17,7 @@ public class Playlist {
 	}
 
 	public void add(File file) {
-		if(file != null && file.exists() && file.canRead()/* && file.getName().endsWith(".mp3")*/)
+		if(file != null && file.exists() && file.canRead())
 			songs.add(file);
 	}
 
