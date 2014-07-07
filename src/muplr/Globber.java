@@ -16,34 +16,34 @@ import java.nio.file.attribute.BasicFileAttributes;
 public class Globber {
 
 	private static String completePath;
-	private static String[] argPath;
+	private static String[] fragmentedPath;
 
 	public static Playlist glob(String arg) {
 		completePath = arg;
-		argPath = arg.split("[/\\\\]");
-		if(Utils.isAbsolute(arg))
+		fragmentedPath = arg.split("[/\\\\]");
+		if(Utils.isAbsolutePath(arg))
 			return loadPlaylist(Paths.get("/"), 1);
 		return loadPlaylist(Main.workingDirectory, 0);
 	}
 
-	public static Playlist loadPlaylist(Path path, int n) {
-		if(n == argPath.length)
+	public static Playlist loadPlaylist(Path workingPath, int n) {
+		if(n == fragmentedPath.length)
 			return new Playlist();
-		switch(argPath[n]) {
+		switch(fragmentedPath[n]) {
 			case ".":
-				return loadPlaylist(path, n + 1);
+				return loadPlaylist(workingPath, n+1);
 
 			case "..":
-				Path parent = path.getParent();
+				Path parent = workingPath.getParent();
 				if(parent == null)
-					Main.error("Error when reading file: " + completePath);
+					Main.error("Invalid path: " + completePath);
 				else
 					return loadPlaylist(parent, n + 1);
 
 			/*case "**":
-				PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + Utils.joinTrailingPath(argPath, n++));
-				System.out.println(Utils.joinTrailingPath(argPath, n));
-				int globSize = Math.max(1, argPath.length - n);
+				PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + Utils.joinTrailingPath(fragmentedPath, n++));
+				System.out.println(Utils.joinTrailingPath(fragmentedPath, n));
+				int globSize = Math.max(1, fragmentedPath.length - n);
 				System.out.println(globSize);
 				Playlist playlist = new Playlist();
 				try {
@@ -69,27 +69,27 @@ public class Globber {
 				return playlist;*/
 
 			default:
-				if(argPath[n].matches("[^\\*\\?\\[\\]\\{\\}\\!]*")) {  // if there is no globbish syntax in the path, no need to sweep the path
-					File newPath = path.resolve(argPath[n]).toFile();
+				if(fragmentedPath[n].matches("[^\\*\\?\\[\\]\\{\\}\\!]*")) {  // if there is no globbish syntax in the path, no need to sweep the path
+					File newPath = workingPath.resolve(fragmentedPath[n]).toFile();
 					if(newPath.exists()) {
 						if(newPath.isDirectory())
 							return loadPlaylist(newPath.toPath(), n + 1);
-						else if(n == argPath.length - 1)
+						else if(n == fragmentedPath.length - 1)
 							return new Playlist(newPath);
 					} else {
-						if(n == argPath.length - 1)
-							Main.error("File does not exist: " + argPath[n]);
+						if(n == fragmentedPath.length - 1)
+							Main.error("File does not exist: " + fragmentedPath[n]);
 						else
-							Main.error("Directory does not exist: " + argPath[n]);
+							Main.error("Directory does not exist: " + fragmentedPath[n]);
 						return new Playlist();
 					}
 				}
-				try(DirectoryStream<Path> stream = Files.newDirectoryStream(path, argPath[n])) {
+				try(DirectoryStream<Path> stream = Files.newDirectoryStream(workingPath, fragmentedPath[n])) {
 					Playlist playlist = new Playlist();
 					for(Path entry : stream) {
 						if(entry.toFile().isDirectory())
 							playlist.add(loadPlaylist(entry, n + 1));
-						else if(n == argPath.length - 1)
+						else if(n == fragmentedPath.length - 1)
 							playlist.add(entry.toFile());
 					}
 					return playlist;

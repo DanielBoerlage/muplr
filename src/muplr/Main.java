@@ -2,7 +2,6 @@ package muplr;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.fusesource.jansi.AnsiConsole;
 
 public class Main {
 
@@ -13,14 +12,13 @@ public class Main {
 		Input.parseArgs(args);
 	}
 
-	public static void exit(int code, String message) {
-		if(!message.isEmpty()) {
-			if(code == 0)
-				Output.print(message);
-			else
-				Output.printErr(message);
-		}
-		System.exit(code);
+	public static void exitSuccess() {
+		System.exit(0);
+	}
+
+	public static void fatalError(String errMsg) {
+		error(errMsg);
+		System.exit(-1);
 	}
 
 	public static void error(String errMsg) {

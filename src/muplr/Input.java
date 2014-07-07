@@ -13,80 +13,43 @@ import java.nio.file.InvalidPathException;
 
 public class Input {
 
-	private final static String usage = "Usage: muplr [-r] [-v volume] File [File..]";
+	private final static String USAGE = "Usage: muplr [-r] [-v volume] File [File..]";
 
 	public static void parseArgs(String[] args) {
-		if(args.length < 1)
-			Main.exit(-1, usage);
-		if(args[0].equals("-h") || args[0].equals("--help"))
-			Main.exit(0, usage);
 		Properties properties = new Properties();
 		int i = 0;
-		while(args[i].startsWith("-")) {
+		for(; args[i].startsWith("-"); i++) {
+			switch(args[i]) {
+				case "-h": case "--help":
+					Output.puts(USAGE);
+					Main.exitSuccess();
 
-			if(args[i].equals("-r") || args[i].equals("--repeat"))
-				properties.setProperty("repeat", "true");
+				case "-r": case "--repeat":
+					properties.setProperty("repeat", "true");
+					break;
 
-			else if(args[i].equals("-v") || args[i].equals("--volume")) {
-				i++;
-				try {
-					int volume = Integer.parseInt(args[i]);
-					if(volume < 0 || volume > 100)
-						Main.exit(-1, "Volume must be between 0 and 100");
-					properties.setProperty("volume", args[i]);
-				} catch(NumberFormatException e) {
-					Main.exit(-1, "The volume option must be followed by a valid integer");
-				}
+				case "-v": case "--volume":
+					try {
+						int volume = Integer.parseInt(args[++i]);
+						if(volume < 0 || volume > 100)
+							Main.fatalError("Volume must be between 0 and 100");
+						properties.setProperty("volume", args[i]);
+					} catch(NumberFormatException e) {
+						Main.fatalError("The volume option must be followed by a valid integer");
+					}
+					break;
+
+				default:
+					Main.fatalError("Unrecognized option: " + args[i]);
 			}
-
-			else
-				Main.exit(-1, "Unrecognized option: " + args[i]);
-			
-			i++;
-			if(i == args.length) // no file specified
-				Main.exit(-1, usage);
 		}
-
-		Playlist loadedPlaylist = new Playlist();
-		/*while(i < args.length) {
-			System.out.println("arg [" + i + "]: " + args[i]);
-			try(DirectoryStream<Path> stream = Files.newDirectoryStream(Main.workingDirectory, args[i])) {
-				for(Path path : stream) {
-					loadedPlaylist.add(path.toFile());
-				}
-			} catch (IOException e) {
-				Main.exit(-1, e.getMessage());  // cause is of type IOException
-			}
-			i++;
-		}*/
-
-		/*for(; i < args.length; i++) {
-			try {
-				Path path = Paths.get(args[i]).toAbsolutePath().normalize();
-				System.out.println(path);
-			} catch(InvalidPathException e) {
-				e.printStackTrace();
-			}
-		}*/
+		if(i == args.length)
+			Main.fatalError(USAGE);
 		
-		/*Path path = Paths.get("dir/subdir/file.txt");
-		System.out.println(path);
-		System.out.println(path.getRoot());
-		System.out.println(path.toAbsolutePath().getRoot());
-		System.out.println(path.getParent());
-		System.out.println(path.getName(0));
-		System.out.println(path.getName(0).relativize(path));
-
-		System.out.println();
-
-		for(String str : path.toString().split("[/\\\\]"))
-			System.out.println(str);*/
-
+		Playlist playlistBuffer = new Playlist();
 		for(; i < args.length; i++)
-			loadedPlaylist.add(Globber.glob(args[i]));
+			playlistBuffer.add(Globber.glob(args[i]));
 
-		System.out.println(loadedPlaylist);
-
-
+		System.out.println(playlistBuffer);
 	}
 }
