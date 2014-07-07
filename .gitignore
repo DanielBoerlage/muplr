@@ -1,6 +1,5 @@
 # binaries
-*.class
-*.jar
+/bin
 
 # build file
 build.xml
