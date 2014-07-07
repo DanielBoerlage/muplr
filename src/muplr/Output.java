@@ -5,11 +5,17 @@ import org.fusesource.jansi.AnsiConsole;
 public class Output {
 
 	private final static String ESC = "\033[";
-	private final static String CLEAR = ESC + "2J";
 	private final static String TEXT_RESET = ESC + "0m";
 
-	private static void print(String str) {
+	private static int cursorX;
+	private static int cursorY;
+
+	public static void print(String str) {
 		AnsiConsole.out.print(str);
+	}
+
+	public static void clear() {
+		print(ESC + "2J" + ESC + "f");
 	}
 
 	public static void puts(String str) {
@@ -17,13 +23,19 @@ public class Output {
 	}
 
 	public static void printErr(String str) {
-		puts(textAttr(31, 1) + str + TEXT_RESET);  // red, bold
+		puts(textAttr(str, 31, 1));  // red, bold
 	}
 
-	private static String textAttr(int... codes) {
-		String out = ESC;
-		for(int code : codes)
-			out += code + ";";
-		return out + "m";
+	public static void printHeader(String firstText, String secondText, int width) {
+		puts(textAttr(firstText + Utils.nChars(' ', width - firstText.length() - secondText.length()) + secondText, 30, 47));  // white background, black foreground
 	}
+
+	private static String textAttr(String str, int... codes) {
+		String attr = ESC;
+		for(int code : codes)
+			attr += code + ";";
+		return attr + "m" + str + TEXT_RESET;
+	}
+
+
 }

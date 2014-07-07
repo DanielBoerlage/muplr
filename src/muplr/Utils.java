@@ -16,6 +16,13 @@ public class Utils {
 		return out.substring(0, out.length()-1);
 	}
 
+	public static String nChars(char c, int n) {
+		String out = "";
+		for(int i = 0; i < n; i++)
+			out += c;
+		return out;
+	}
+
 	/*public static String joinTrailingPath(String[] strs, int index) {
 		if(index == strs.length)
 			return "/*";

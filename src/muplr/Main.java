@@ -9,7 +9,9 @@ public class Main {
 	public final static String OS = System.getProperty("os.name");
 
 	public static void main(String[] args) {
-		Input.parseArgs(args);
+		Output.clear();
+		Output.printHeader("muplr", "Daniel Boerlage 2014", 80);
+		//Input.parseArgs(args);
 	}
 
 	public static void exitSuccess() {
