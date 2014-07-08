@@ -7,8 +7,7 @@ public class Output {
 	private final static String ESC = "\033[";
 	private final static String TEXT_RESET = ESC + "0m";
 
-	private static int cursorX;
-	private static int cursorY;
+	//private final static Dimension dimension = new Dimension(80, 20);
 
 	public static void print(String str) {
 		AnsiConsole.out.print(str);

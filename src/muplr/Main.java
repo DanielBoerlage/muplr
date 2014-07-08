@@ -2,16 +2,52 @@ package muplr;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Scanner;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import javazoom.jl.player.advanced.jlap;
+import javazoom.jl.decoder.JavaLayerException;
 
 public class Main {
 
 	public final static Path WORKING_DIRECTORY = Paths.get(System.getProperty("user.dir"));
 	public final static String OS = System.getProperty("os.name");
+	public final static InputStream EMPTY_STREAM = new ByteArrayInputStream(new byte[0]);
 
-	public static void main(String[] args) {
-		Output.clear();
-		Output.printHeader("muplr", "Daniel Boerlage 2014", 80);
-		//Input.parseArgs(args);
+	public static void main(String[] args) throws Exception {
+		//Output.clear();
+		//Output.printHeader("muplr", "Daniel Boerlage 2014", 80);
+		/*InputStream keyboard = System.in;
+		Thread t = new Thread(){
+			public void run() {
+				try {
+					while(true) {
+						Scanner sc = new Scanner(System.in);
+						if(sc.hasNextLine())
+							System.out.println(sc.nextLine());
+					}
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		t.setDaemon(true);
+		t.start();
+		try {
+			System.setIn(EMPTY_STREAM);
+			System.out.println("first");
+			Thread.sleep(5000);
+			System.setIn(keyboard);
+			System.out.println("second");
+			Thread.sleep(5000);
+			System.out.println("third");
+		} catch(Exception e) {
+			e.printStackTrace();
+		}*/
+
+
+		jlap player = new jlap();
+		player.play("C:\\Users\\Daniel\\Music\\RUSH\\1975 - Fly By Night @320\\05 - Fly By Night.mp3");
 	}
 
 	public static void exitSuccess() {
