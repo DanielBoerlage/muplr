@@ -18,27 +18,28 @@ public class Player implements Runnable {
 	private final static int PAUSED = 1;
 	private final static int FINISHED = 2;
 
-	private int state;
+	private int state, position, framePosition;
+	private float msPerFrame;
 	private Object lock = new Object();
 	/** current playback position in truncated seconds */
-	private int position;
 	private Bitstream bitstream;
 	private Decoder decoder;
 	private AudioDevice audio;
 	private PlayerListener listener;
 	
 	public Player(File file, double secondsOffset, PlayerListener listener) {
-		position = 0;
+		position = framePosition = 0;
 		this.listener = listener;
 		try {
 			bitstream = new Bitstream(new FileInputStream(file));
 			audio = FactoryRegistry.systemRegistry().createAudioDevice();
 			audio.open(decoder = new Decoder());
-			if(secondsOffset > 0) {
-				int frames = (int)((secondsOffset * 1000) / bitstream.readFrame().ms_per_frame()) - 1;
+			msPerFrame = bitstream.readFrame().ms_per_frame();
+			bitstream.unreadFrame();
+			int frames = (int)(secondsOffset * 1000 / msPerFrame);
+			while(frames-- > 0 && bitstream.readFrame() != null) {
+				framePosition++;
 				bitstream.closeFrame();
-				while(frames-- > 0 && bitstream.readFrame() != null)
-					bitstream.closeFrame();
 			}
 		} catch(FileNotFoundException e) {
 			Main.error("File not found: " + file);
@@ -52,11 +53,6 @@ public class Player implements Runnable {
 			if(playFrame()) {
 				listener.playbackFinished(false);
 				break;
-			}
-			int newPosition = audio.getPosition() / 1000;
-			if(newPosition > position) {
-				position = newPosition;
-				listener.timeUpdate(position);
 			}
 			synchronized(lock) {
 				if(state == PAUSED) {
@@ -101,6 +97,12 @@ public class Player implements Runnable {
 			Header header = bitstream.readFrame();
 			if(header == null)
 				return true;
+			framePosition++;
+			int newPosition = (int)(msPerFrame * framePosition) / 1000;
+			if(newPosition != position) {
+				position = newPosition;
+				listener.timeUpdate(position);
+			}
 			SampleBuffer output = (SampleBuffer)decoder.decodeFrame(header, bitstream);
 			audio.write(output.getBuffer(), 0, output.getBufferLength());
 			bitstream.closeFrame();
