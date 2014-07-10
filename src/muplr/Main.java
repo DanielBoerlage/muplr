@@ -1,11 +1,13 @@
 package muplr;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
-import javazoom.jl.player.advanced.jlap;
+import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.decoder.JavaLayerException;
 
 public class Main {
@@ -46,8 +48,24 @@ public class Main {
 		}*/
 
 
-		jlap player = new jlap();
-		player.play("C:\\Users\\Daniel\\Music\\RUSH\\1975 - Fly By Night @320\\05 - Fly By Night.mp3");
+		//jlap player = new jlap();
+		//player.play("C:\\Users\\Daniel\\Music\\RUSH\\1975 - Fly By Night @320\\05 - Fly By Night.mp3");
+
+		MuplrPlayer player = new MuplrPlayer(new File("C:\\Users\\Daniel\\Music\\RUSH\\1975 - Fly By Night @320\\05 - Fly By Night.mp3"));
+		Thread playerThread = new Thread(player);
+		playerThread.setDaemon(true);
+		playerThread.start();
+		Thread.sleep(5000);
+
+		/*File file = new File("C:\\Users\\Daniel\\Music\\RUSH\\1975 - Fly By Night @320\\05 - Fly By Night.mp3");
+		FileInputStream stream = new FileInputStream(file);
+		AdvancedPlayer player = new AdvancedPlayer(stream);
+		player.play(0,100);
+		player.close();
+		player = new AdvancedPlayer(new FileInputStream(file));
+		player.play(100,200);
+		player.close();*/
+
 	}
 
 	public static void exitSuccess() {
