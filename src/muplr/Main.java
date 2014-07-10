@@ -51,17 +51,23 @@ public class Main {
 		//jlap player = new jlap();
 		//player.play("C:\\Users\\Daniel\\Music\\RUSH\\1975 - Fly By Night @320\\05 - Fly By Night.mp3");
 
-		MuplrPlayer player = new MuplrPlayer(new File("C:\\Users\\Daniel\\Music\\RUSH\\1975 - Fly By Night @320\\05 - Fly By Night.mp3"), 118);
+		System.out.println("xx:xx");
+		File audioFile = new File("C:\\Users\\Daniel\\Music\\Jonathan Coultan\\Songs from Ze Frank's The Show\\Fun Winter.mp3");
+		Player player = new Player(audioFile, 0, new PlayerListener(){
+			@Override
+			public void timeUpdate(int seconds) {
+				System.out.printf("%2d:%02d%n", seconds / 60, seconds % 60);
+			}
+
+			@Override
+			public void playbackFinished(boolean userInvoked) {
+
+			}
+		});
 		Thread playerThread = new Thread(player);
 		playerThread.setDaemon(true);
 		playerThread.start();
-		Thread.sleep(5000);
-		player.pause();
-		Thread.sleep(2000);
-		player.resume();
-		Thread.sleep(5000);
-		player.stop();
-		Thread.sleep(1500);
+		Thread.sleep(80000);
 
 		/*File file = new File("C:\\Users\\Daniel\\Music\\RUSH\\1975 - Fly By Night @320\\05 - Fly By Night.mp3");
 		FileInputStream stream = new FileInputStream(file);

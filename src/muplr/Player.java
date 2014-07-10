@@ -11,9 +11,8 @@ import javazoom.jl.decoder.SampleBuffer;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.AudioDevice;
-import javazoom.jl.decoder.BitstreamException;
 
-public class MuplrPlayer implements Runnable {
+public class Player implements Runnable {
 
 	private final static double FRAMES_PER_SECOND = 38.46153846;
 
@@ -23,32 +22,40 @@ public class MuplrPlayer implements Runnable {
 
 	private int state;
 	private Object lock = new Object();
-	private File file;
+	/** current playback position in truncated seconds */
+	private int position;
 	private Bitstream bitstream;
 	private Decoder decoder;
 	private AudioDevice audio;
+	private PlayerListener listener;
 	
-	public MuplrPlayer(File file, double seconds) {
-		this.file = file;
+	public Player(File file, double secondsOffset, PlayerListener listener) {
+		position = 0;
+		this.listener = listener;
 		try {
 			bitstream = new Bitstream(new FileInputStream(file));
 			audio = FactoryRegistry.systemRegistry().createAudioDevice();
 			audio.open(decoder = new Decoder());
-			int frames = (int)(seconds * FRAMES_PER_SECOND);
-			while(frames-- > 0 && bitstream.readFrame() != null)
+			int framesOffset = (int)(secondsOffset * FRAMES_PER_SECOND);
+			while(framesOffset-- > 0 && bitstream.readFrame() != null)
 				bitstream.closeFrame();
 		} catch(FileNotFoundException e) {
-			Main.error("Error: file not found: " + file);
+			Main.error("File not found: " + file);
 		} catch(JavaLayerException e) {
 			Main.error("JavaLayerException");
 		}
 	}
 
 	public void run() {
-		while(!playFrame() && state != FINISHED) {
+		while(state != FINISHED) {
+			if(playFrame())
+				break;
+			if(audio.getPosition() / 1000 > position) {
+				position = audio.getPosition() / 1000;
+				listener.timeUpdate(position);
+			}
 			synchronized(lock) {
-				while(state == PAUSED) 
-				{
+				if(state == PAUSED) {
 					try {
 						lock.wait();
 					} catch(InterruptedException e) {
@@ -60,7 +67,7 @@ public class MuplrPlayer implements Runnable {
 		close();
 	}
 
-	public void close() {
+	private void close() {
 		audio.flush();
 		audio.close();
 		try {
