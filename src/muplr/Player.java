@@ -14,8 +14,6 @@ import javazoom.jl.player.AudioDevice;
 
 public class Player implements Runnable {
 
-	private final static double FRAMES_PER_SECOND = 38.46153846;
-
 	private final static int PLAYING = 0;
 	private final static int PAUSED = 1;
 	private final static int FINISHED = 2;
@@ -36,9 +34,12 @@ public class Player implements Runnable {
 			bitstream = new Bitstream(new FileInputStream(file));
 			audio = FactoryRegistry.systemRegistry().createAudioDevice();
 			audio.open(decoder = new Decoder());
-			int framesOffset = (int)(secondsOffset * FRAMES_PER_SECOND);
-			while(framesOffset-- > 0 && bitstream.readFrame() != null)
+			if(secondsOffset > 0) {
+				int frames = (int)((secondsOffset * 1000) / bitstream.readFrame().ms_per_frame()) - 1;
 				bitstream.closeFrame();
+				while(frames-- > 0 && bitstream.readFrame() != null)
+					bitstream.closeFrame();
+			}
 		} catch(FileNotFoundException e) {
 			Main.error("File not found: " + file);
 		} catch(JavaLayerException e) {
@@ -48,10 +49,13 @@ public class Player implements Runnable {
 
 	public void run() {
 		while(state != FINISHED) {
-			if(playFrame())
+			if(playFrame()) {
+				listener.playbackFinished(false);
 				break;
-			if(audio.getPosition() / 1000 > position) {
-				position = audio.getPosition() / 1000;
+			}
+			int newPosition = audio.getPosition() / 1000;
+			if(newPosition > position) {
+				position = newPosition;
 				listener.timeUpdate(position);
 			}
 			synchronized(lock) {
@@ -59,6 +63,7 @@ public class Player implements Runnable {
 					try {
 						lock.wait();
 					} catch(InterruptedException e) {
+						listener.playbackFinished(false);
 						break;
 					}
 				}
@@ -67,18 +72,9 @@ public class Player implements Runnable {
 		close();
 	}
 
-	private void close() {
-		audio.flush();
-		audio.close();
-		try {
-			bitstream.close();
-		} catch(JavaLayerException e) {
-			Main.error("JavaLayerException");
-		}
-	}
-
 	public void stop() {
 		synchronized(lock) {
+			listener.playbackFinished(true);
 			state = FINISHED;
 			lock.notify();
 		}
@@ -100,7 +96,7 @@ public class Player implements Runnable {
 	/**
 	 * @return true if the last frame was played
 	 */
-	public boolean playFrame() {
+	private boolean playFrame() {
 		try {
 			Header header = bitstream.readFrame();
 			if(header == null)
@@ -114,5 +110,15 @@ public class Player implements Runnable {
 			Main.error("JavaLayerException" + e);
 		}
 		return false;
+	}
+
+	private void close() {
+		audio.flush();
+		audio.close();
+		try {
+			bitstream.close();
+		} catch(JavaLayerException e) {
+			Main.error("JavaLayerException");
+		}
 	}
 }

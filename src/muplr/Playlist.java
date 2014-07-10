@@ -16,6 +16,29 @@ public class Playlist {
 		songs.add(song);
 	}
 
+	/*public void play(int track) {
+		Player player = new Player(songs.get(i), 0, new PlayerListener(){
+			@Override
+			public void timeUpdate(int seconds) {
+				System.out.printf("%2d:%02d%n", seconds / 60, seconds % 60);
+			}
+
+			@Override
+			public void playbackFinished(boolean userInvoked) {
+				if(userInvoked)
+					return;
+				if(track == songs.size() - 1) {
+					if(Boolean.parseBoolean(Main.getProperty("repeat", "false")))
+						play(0);
+				} else
+					play(track + 1);
+			}
+		});
+		Thread playerThread = new Thread(player);
+		playerThread.setDaemon(true);
+		playerThread.start();
+	}*/
+
 	public void add(File file) {
 		if(file != null && file.exists() && file.canRead())
 			songs.add(file);
@@ -23,12 +46,5 @@ public class Playlist {
 
 	public void add(Playlist playlist) {
 		songs.addAll(playlist.songs);
-	}
-
-	public String toString() {
-		String out = "Listing playlist..\n";
-		for(int i = 0; i < songs.size(); i++)
-			out += "\t[" + i + "] " + songs.get(i) + "\n";
-		return out;
 	}
 }
