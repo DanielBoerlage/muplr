@@ -51,11 +51,17 @@ public class Main {
 		//jlap player = new jlap();
 		//player.play("C:\\Users\\Daniel\\Music\\RUSH\\1975 - Fly By Night @320\\05 - Fly By Night.mp3");
 
-		MuplrPlayer player = new MuplrPlayer(new File("C:\\Users\\Daniel\\Music\\RUSH\\1975 - Fly By Night @320\\05 - Fly By Night.mp3"));
+		MuplrPlayer player = new MuplrPlayer(new File("C:\\Users\\Daniel\\Music\\RUSH\\1975 - Fly By Night @320\\05 - Fly By Night.mp3"), 118);
 		Thread playerThread = new Thread(player);
 		playerThread.setDaemon(true);
 		playerThread.start();
 		Thread.sleep(5000);
+		player.pause();
+		Thread.sleep(2000);
+		player.resume();
+		Thread.sleep(5000);
+		player.stop();
+		Thread.sleep(1500);
 
 		/*File file = new File("C:\\Users\\Daniel\\Music\\RUSH\\1975 - Fly By Night @320\\05 - Fly By Night.mp3");
 		FileInputStream stream = new FileInputStream(file);
