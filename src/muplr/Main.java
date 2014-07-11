@@ -18,12 +18,14 @@ public class Main {
 
 	public final static Path WORKING_DIRECTORY = Paths.get(System.getProperty("user.dir"));
 	public final static String OS = System.getProperty("os.name");
-	public final static InputStream EMPTY_STREAM = new ByteArrayInputStream(new byte[0]);
+	//public final static InputStream EMPTY_STREAM = new ByteArrayInputStream(new byte[0]);
 	public static Properties properties;
 
 	public static void main(String[] args) throws Exception {
 		properties = new Properties();
-
+		Playlist playlist = Input.parseArgs(args);
+		PlayerHandle playerHandle = null;
+		playlist.play(0, playerHandle);
 
 		//Output.clear();
 		//Output.printHeader("muplr", "Daniel Boerlage 2014", 80);
@@ -59,7 +61,7 @@ public class Main {
 		//jlap player = new jlap();
 		//player.play("C:\\Users\\Daniel\\Music\\RUSH\\1975 - Fly By Night @320\\05 - Fly By Night.mp3");
 
-		System.out.println("xx:xx");
+		/*System.out.println("xx:xx");
 		File audioFile = new File("C:\\Users\\Daniel\\Music\\Jonathan Coultan\\Songs from Ze Frank's The Show\\Fun Winter.mp3");
 		Player player = new Player(audioFile, 60, new PlayerListener(){
 			@Override
@@ -77,7 +79,7 @@ public class Main {
 		playerThread.start();
 		Thread.sleep(10000);
 		player.stop();
-		Thread.sleep(1000);
+		Thread.sleep(1000);*/
 
 		/*Mp3File mp3file = new Mp3File("C:\\Users\\Daniel\\Music\\Jonathan Coultan\\Songs from Ze Frank's The Show\\Fun Winter.mp3");
 		System.out.println("Length of this mp3 is: " + mp3file.getLengthInSeconds() + " seconds");

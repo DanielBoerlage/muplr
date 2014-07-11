@@ -21,13 +21,13 @@ public class Player implements Runnable {
 	private int state, position, framePosition;
 	private float msPerFrame;
 	private Object lock = new Object();
-	/** current playback position in truncated seconds */
 	private Bitstream bitstream;
 	private Decoder decoder;
 	private AudioDevice audio;
 	private PlayerListener listener;
 	
-	public Player(File file, double secondsOffset, PlayerListener listener) {
+	public Player(File file, double secondsOffset, PlayerHandle handle, PlayerListener listener) {
+		handle = new PlayerHandle(this);
 		position = framePosition = 0;
 		this.listener = listener;
 		try {
@@ -122,5 +122,41 @@ public class Player implements Runnable {
 		} catch(JavaLayerException e) {
 			Main.error("JavaLayerException");
 		}
+	}
+}
+
+interface PlayerListener {
+
+	/**
+	 * Called everytime the player's position advances by one second
+	 * @param seconds  the player's current position in seconds
+	 */
+	public void timeUpdate(int seconds);
+
+	/**
+	 * Called when the player ends playback, in any circumstance
+	 * @param userInvoked  the player's <code>stop</code> method was called
+	 */
+	public void playbackFinished(boolean userInvoked);
+}
+
+class PlayerHandle {
+
+	private Player player;
+
+	public PlayerHandle(Player player) {
+		this.player = player;
+	}
+
+	public void stop() {
+		player.stop();
+	}
+
+	public void resume() {
+		player.resume();
+	}
+
+	public void pause() {
+		player.pause();
 	}
 }

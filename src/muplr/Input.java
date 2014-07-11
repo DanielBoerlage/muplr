@@ -6,7 +6,7 @@ public class Input {
 
 	private final static String USAGE = "Usage: muplr [-r] [-v volume] File [File..]";
 
-	public static void parseArgs(String[] args) {
+	public static Playlist parseArgs(String[] args) {
 		int i = 0;
 		for(; i < args.length && args[i].startsWith("-"); i++) {
 			switch(args[i]) {
@@ -36,10 +36,10 @@ public class Input {
 		if(i == args.length)
 			Main.fatalError(USAGE);
 
-		Playlist playlistBuffer = new Playlist();
+		Playlist playlist = new Playlist();
 		for(; i < args.length; i++)
-			playlistBuffer.add(Globber.glob(args[i]));
+			playlist.add(Globber.glob(args[i]));
 
-		System.out.println(playlistBuffer);
+		return playlist;
 	}
 }

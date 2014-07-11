@@ -16,8 +16,8 @@ public class Playlist {
 		songs.add(song);
 	}
 
-	/*public void play(int track) {
-		Player player = new Player(songs.get(i), 0, new PlayerListener(){
+	public void play(int track, PlayerHandle handle) {
+		Player player = new Player(songs.get(track), 0, handle, new PlayerListener(){
 			@Override
 			public void timeUpdate(int seconds) {
 				System.out.printf("%2d:%02d%n", seconds / 60, seconds % 60);
@@ -28,16 +28,16 @@ public class Playlist {
 				if(userInvoked)
 					return;
 				if(track == songs.size() - 1) {
-					if(Boolean.parseBoolean(Main.getProperty("repeat", "false")))
-						play(0);
+					if(Boolean.parseBoolean(Main.properties.getProperty("repeat", "false")))
+						play(0, handle);
 				} else
-					play(track + 1);
+					play(track + 1, handle);
 			}
 		});
 		Thread playerThread = new Thread(player);
-		playerThread.setDaemon(true);
+		playerThread.setDaemon(false);  // !!!!
 		playerThread.start();
-	}*/
+	}
 
 	public void add(File file) {
 		if(file != null && file.exists() && file.canRead())
@@ -46,5 +46,9 @@ public class Playlist {
 
 	public void add(Playlist playlist) {
 		songs.addAll(playlist.songs);
+	}
+
+	public File get(int i) {
+		return songs.get(i);
 	}
 }
