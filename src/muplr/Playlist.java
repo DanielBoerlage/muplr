@@ -16,8 +16,8 @@ public class Playlist {
 		songs.add(song);
 	}
 
-	public void play(int track, PlayerHandle handle) {
-		Player player = new Player(songs.get(track), 0, handle, new PlayerListener(){
+	public void play(final int track) {
+		Player player = new Player(songs.get(track), 0, new PlayerListener(){
 			@Override
 			public void timeUpdate(int seconds) {
 				System.out.printf("%2d:%02d%n", seconds / 60, seconds % 60);
@@ -29,9 +29,9 @@ public class Playlist {
 					return;
 				if(track == songs.size() - 1) {
 					if(Boolean.parseBoolean(Main.properties.getProperty("repeat", "false")))
-						play(0, handle);
+						play(0);
 				} else
-					play(track + 1, handle);
+					play(track + 1);
 			}
 		});
 		Thread playerThread = new Thread(player);

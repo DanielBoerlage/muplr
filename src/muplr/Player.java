@@ -26,8 +26,7 @@ public class Player implements Runnable {
 	private AudioDevice audio;
 	private PlayerListener listener;
 	
-	public Player(File file, double secondsOffset, PlayerHandle handle, PlayerListener listener) {
-		handle = new PlayerHandle(this);
+	public Player(File file, double secondsOffset, PlayerListener listener) {
 		position = framePosition = 0;
 		this.listener = listener;
 		try {
@@ -138,25 +137,4 @@ interface PlayerListener {
 	 * @param userInvoked  the player's <code>stop</code> method was called
 	 */
 	public void playbackFinished(boolean userInvoked);
-}
-
-class PlayerHandle {
-
-	private Player player;
-
-	public PlayerHandle(Player player) {
-		this.player = player;
-	}
-
-	public void stop() {
-		player.stop();
-	}
-
-	public void resume() {
-		player.resume();
-	}
-
-	public void pause() {
-		player.pause();
-	}
 }

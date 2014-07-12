@@ -1,5 +1,6 @@
 # binaries
 /bin
+/dist
 
 # build file
 build.xml
