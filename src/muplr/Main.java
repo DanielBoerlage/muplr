@@ -23,13 +23,18 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		properties = new Properties();
-		Playlist playlist = Input.parseArgs(args);
-		playlist.list();
-		if(playlist.size() > 0)
-			playlist.play(0);
+		//Playlist playlist = Input.parseArgs(args);
+		//if(playlist.size() > 0)
+		//	fatalError("No files matched the given patterns");
+		//playlist.play(0);
 
-		//Output.clear();
-		//Output.printHeader("muplr", "Daniel Boerlage 2014", 80);
+		Output.clear();
+		Output.printHeader("JoCo  ", 80);
+		Output.printPlaying("Curl", true);
+		Output.printStatus(110, 154);
+		Output.printProperties(20, true);
+		Output.puts(Utils.nChars('\n',10));
+
 		/*InputStream keyboard = System.in;
 		Thread t = new Thread(){
 			public void run() {

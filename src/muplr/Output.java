@@ -5,12 +5,12 @@ import org.fusesource.jansi.AnsiConsole;
 public class Output {
 
 	private final static String ESC = "\033[";
-	private final static String TEXT_RESET = ESC + "0m";
 
-	//private final static Dimension dimension = new Dimension(80, 20);
-
-	public static void print(String str) {
-		AnsiConsole.out.print(str);
+	private static void print(Object obj, int... textAttr) {
+		String attr = ESC;
+		for(int code : textAttr)
+			attr += code + ";";
+		AnsiConsole.out.print(attr + "m" + obj + ESC + "0m");
 	}
 
 	public static void clear() {
@@ -22,19 +22,37 @@ public class Output {
 	}
 
 	public static void printErr(String str) {
-		puts(textAttr(str, 31, 1));  // red, bold
+		print(str + "\n", 31, 1);  // red, bold
 	}
 
-	public static void printHeader(String firstText, String secondText, int width) {
-		puts(textAttr(firstText + Utils.nChars(' ', width - firstText.length() - secondText.length()) + secondText, 30, 47));  // white background, black foreground
+	public static void printHeader(String playlistName, int width) {
+		print("  muplr" + Utils.nChars(' ', width - 7 - playlistName.length()) + playlistName, 30, 47);  // white background, black foreground
 	}
 
-	private static String textAttr(String str, int... codes) {
-		String attr = ESC;
-		for(int code : codes)
-			attr += code + ";";
-		return attr + "m" + str + TEXT_RESET;
+	public static void printPlaying(String songName, boolean paused) {
+		print(ESC + "2;2f");
+		if(songName.length() > 53)
+			songName = songName.substring(0, 50) + "...";
+		print("Playing track: ");
+		print(songName, 32, 1);
+		if(paused)
+			print("  (paused)", 1);
 	}
 
+	public static void printStatus(int position, int total) {
+		print(ESC + "3;2f");
+		int status = (int)((double)(position) / total * 64.0);
+		print(timeRep(position) + " [" + Utils.nChars('#', status), 1);
+		print(Utils.nChars((char)250, 64 - status));
+		print("] " + timeRep(total), 1);
+	}
 
+	private static String timeRep(int seconds) {
+		return String.format("%2d:%02d", seconds / 60, seconds % 60);
+	}
+
+	public static void printProperties(int volume, boolean repeat) {
+		print(ESC + "4;2f");
+		print("Volume: " + volume + "   Repeat: " + (repeat ? "on" : "off"));
+	}
 }

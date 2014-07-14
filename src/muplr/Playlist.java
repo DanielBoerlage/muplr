@@ -55,10 +55,4 @@ public class Playlist {
 	public int size() {
 		return songs.size();
 	}
-
-	public void list() {
-		for(int i = 0; i < songs.size(); i++) {
-			System.out.println("[" + i + "]: " + songs.get(i));
-		}
-	}
 }
