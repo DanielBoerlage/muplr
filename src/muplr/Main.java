@@ -23,17 +23,20 @@ public class Main {
 
 	public static void main(String[] args) throws Exception {
 		properties = new Properties();
-		//Playlist playlist = Input.parseArgs(args);
-		//if(playlist.size() > 0)
-		//	fatalError("No files matched the given patterns");
+		Playlist playlist = Input.parseArgs(args);
+		if(playlist.size() == 0)
+			fatalError("No files matched the given patterns");
 		//playlist.play(0);
 
 		Output.clear();
-		Output.printHeader("JoCo  ", 80);
+		Output.printHeader(playlist, 80);
 		Output.printPlaying("Curl", true);
 		Output.printStatus(110, 154);
 		Output.printProperties(20, true);
-		Output.puts(Utils.nChars('\n',10));
+		Output.printDivider();
+		Output.printPlaylist(playlist, 0, 10, 16);
+		Output.printPrompt();
+		Thread.sleep(7000);
 
 		/*InputStream keyboard = System.in;
 		Thread t = new Thread(){

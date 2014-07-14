@@ -6,9 +6,15 @@ import java.io.File;
 public class Playlist {
 
 	private ArrayList<File> songs;
+	private String name;
 
 	public Playlist() {
 		songs = new ArrayList<File>();
+	}
+
+	public Playlist(String name) {
+		this();
+		this.name = name;
 	}
 
 	public Playlist(File song) {
@@ -54,5 +60,9 @@ public class Playlist {
 
 	public int size() {
 		return songs.size();
+	}
+
+	public String toString() {
+		return name;
 	}
 }

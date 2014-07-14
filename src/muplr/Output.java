@@ -25,8 +25,8 @@ public class Output {
 		print(str + "\n", 31, 1);  // red, bold
 	}
 
-	public static void printHeader(String playlistName, int width) {
-		print("  muplr" + Utils.nChars(' ', width - 7 - playlistName.length()) + playlistName, 30, 47);  // white background, black foreground
+	public static void printHeader(Playlist playlist, int width) {
+		print("  muplr" + Utils.nChars(' ', width - 9 - playlist.toString().length()) + playlist + "  ", 30, 47);  // white background, black foreground
 	}
 
 	public static void printPlaying(String songName, boolean paused) {
@@ -54,5 +54,40 @@ public class Output {
 	public static void printProperties(int volume, boolean repeat) {
 		print(ESC + "4;2f");
 		print("Volume: " + volume + "   Repeat: " + (repeat ? "on" : "off"));
+	}
+
+	public static void printDivider() {
+		print(ESC + "5;f");
+		print(Utils.nChars((char)196, 80));
+	}
+
+	public static void printPlaylist(Playlist playlist, int index, int playing, int rows) {
+		print(ESC + "6;f");
+		if(index == 0)
+			print(playlist, 34, 1);
+		else
+			print("...");
+		int i = index;
+		while(true) {
+			String songName = playlist.get(i).getName();
+			songName = songName.substring(0, songName.indexOf("."));
+			if(i == playing)
+				print("\n> " + songName, 32, 1);
+			else
+				print("\n  " + songName, 32);
+			if(i >= index + rows - 1) {
+				if(i < playlist.size() - 1)
+					print("\n...");
+				break;
+			}
+			if(i >= playlist.size() - 1)
+				break;
+			i++;
+		}
+	}
+
+	public static void printPrompt() {
+		print(ESC + "25;f");
+		print(":");
 	}
 }

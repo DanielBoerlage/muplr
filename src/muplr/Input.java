@@ -36,7 +36,7 @@ public class Input {
 		if(i == args.length)
 			Main.fatalError(USAGE);
 
-		Playlist playlist = new Playlist();
+		Playlist playlist = new Playlist("new playlist");
 		for(; i < args.length; i++)
 			playlist.add(Globber.glob(args[i]));
 
