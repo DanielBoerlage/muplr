@@ -24,7 +24,9 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		properties = new Properties();
 		Playlist playlist = Input.parseArgs(args);
-		playlist.play(0);
+		playlist.list();
+		if(playlist.size() > 0)
+			playlist.play(0);
 
 		//Output.clear();
 		//Output.printHeader("muplr", "Daniel Boerlage 2014", 80);
